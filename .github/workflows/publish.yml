@@ -26,9 +26,16 @@ jobs:
       - run: pnpm --filter @haruspex-guru-sdk/mcp-server build
       # npm trusted publishing: OIDC handles auth via id-token: write +
       # the trusted publisher configured on each package on npmjs.com.
-      # No NODE_AUTH_TOKEN needed.
-      - run: pnpm --filter @haruspex-guru-sdk/sdk publish --provenance --access public --no-git-checks
-      - run: pnpm --filter @haruspex-guru-sdk/mcp-server publish --provenance --access public --no-git-checks
+      # We use `npm publish` directly (not `pnpm publish`) because pnpm's
+      # publish flow doesn't currently surface the OIDC token to the npm
+      # registry; npm publish does the right thing automatically when
+      # id-token: write is granted.
+      - name: Publish @haruspex-guru-sdk/sdk
+        working-directory: packages/js
+        run: npm publish --provenance --access public
+      - name: Publish @haruspex-guru-sdk/mcp-server
+        working-directory: packages/mcp
+        run: npm publish --provenance --access public
 
   publish-pypi:
     name: Publish to PyPI
