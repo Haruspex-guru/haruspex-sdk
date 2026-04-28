@@ -41,7 +41,7 @@ from haruspex.types import (
     TopicScore,
 )
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 __all__ = [
     "AsyncHaruspex",

@@ -6,6 +6,18 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-04-28
+
+### Fixed
+
+- `@haruspex-guru-sdk/mcp-server` 0.1.2 was published with a broken
+  dependency on `@haruspex-guru-sdk/sdk` — `npm publish` left the pnpm
+  `workspace:^` specifier in the published `package.json`, which npm
+  installs do not understand. 0.1.3 fixes this by packing with
+  `pnpm pack` first (which rewrites the specifier to a real version),
+  then publishing the resulting tarball with `npm publish`. The 0.1.2
+  mcp-server tarball on npm is unusable; install 0.1.3 or later.
+
 ## [0.1.2] - 2026-04-28
 
 ### Changed
@@ -47,7 +59,8 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Captured-response test fixtures and `scripts/capture-fixtures.sh` for
   re-capturing them against the live API.
 
-[Unreleased]: https://github.com/Haruspex-guru/haruspex-sdk/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/Haruspex-guru/haruspex-sdk/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.3
 [0.1.2]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.0

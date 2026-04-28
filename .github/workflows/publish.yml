@@ -34,9 +34,17 @@ jobs:
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # @haruspex-guru-sdk/mcp-server depends on @haruspex-guru-sdk/sdk via
+      # workspace:^, which npm publish would copy verbatim into the published
+      # package.json — breaking installs. Use `pnpm pack` to produce a
+      # tarball with the workspace specifier rewritten to a real version,
+      # then `npm publish` the tarball with our NPM_TOKEN.
+      - name: Pack @haruspex-guru-sdk/mcp-server
+        working-directory: packages/mcp
+        run: pnpm pack --pack-destination .
       - name: Publish @haruspex-guru-sdk/mcp-server
         working-directory: packages/mcp
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public ./haruspex-guru-sdk-mcp-server-*.tgz
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
