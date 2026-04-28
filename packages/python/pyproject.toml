@@ -58,7 +58,9 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
-ignore = ["E501"]
+# UP045 / UP007 want `X | None` syntax which requires Python 3.10+.
+# We support Python 3.9, so keep `Optional[X]`.
+ignore = ["E501", "UP007", "UP045"]
 
 [tool.mypy]
 python_version = "3.9"

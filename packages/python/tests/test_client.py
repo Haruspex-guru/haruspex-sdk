@@ -11,13 +11,13 @@ import pytest
 import respx
 
 from haruspex import (
+    TOPIC_SLUGS,
     AsyncHaruspex,
     Haruspex,
     HaruspexAuthError,
     HaruspexNotFoundError,
     HaruspexRateLimitError,
     HaruspexValidationError,
-    TOPIC_SLUGS,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures"

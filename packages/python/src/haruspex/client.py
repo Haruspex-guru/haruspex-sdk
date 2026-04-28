@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import random
 import time
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import httpx
 
@@ -151,7 +151,7 @@ class _BaseClient:
 
 
 class _Scores:
-    def __init__(self, client: "Haruspex") -> None:
+    def __init__(self, client: Haruspex) -> None:
         self._c = client
 
     def get(self, symbol: str) -> ScoreResponse:
@@ -183,7 +183,7 @@ class _Scores:
 
 
 class _AsyncScores:
-    def __init__(self, client: "AsyncHaruspex") -> None:
+    def __init__(self, client: AsyncHaruspex) -> None:
         self._c = client
 
     async def get(self, symbol: str) -> ScoreResponse:
@@ -230,7 +230,7 @@ class Haruspex(_BaseClient):
         self._http = httpx.Client(timeout=timeout, transport=transport)
         self.scores = _Scores(self)
 
-    def __enter__(self) -> "Haruspex":
+    def __enter__(self) -> Haruspex:
         return self
 
     def __exit__(self, *_: Any) -> None:
@@ -317,7 +317,7 @@ class AsyncHaruspex(_BaseClient):
         self._http = httpx.AsyncClient(timeout=timeout, transport=transport)
         self.scores = _AsyncScores(self)
 
-    async def __aenter__(self) -> "AsyncHaruspex":
+    async def __aenter__(self) -> AsyncHaruspex:
         return self
 
     async def __aexit__(self, *_: Any) -> None:
