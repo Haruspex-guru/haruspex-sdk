@@ -1,4 +1,4 @@
-# @haruspex/mcp-server
+# @haruspex-guru-sdk/mcp-server
 
 Official Haruspex [Model Context Protocol](https://modelcontextprotocol.io)
 server. Brings stock intelligence scores into any MCP-compatible
@@ -6,7 +6,7 @@ application — Claude Desktop, Cursor, Windsurf, Zed, Continue.dev, and
 others — with no code.
 
 This package is a thin server process. All HTTP logic is delegated to
-[`@haruspex/sdk`](../js/README.md).
+[`@haruspex-guru-sdk/sdk`](../js/README.md).
 
 ## Quickstart — Claude Desktop
 
@@ -21,7 +21,7 @@ Edit your `claude_desktop_config.json`:
   "mcpServers": {
     "haruspex": {
       "command": "npx",
-      "args": ["-y", "@haruspex/mcp-server"],
+      "args": ["-y", "@haruspex-guru-sdk/mcp-server"],
       "env": { "HARUSPEX_API_KEY": "hrspx_live_a7c52f9315a65c377fec9c30b53f266b" }
     }
   }
@@ -45,7 +45,7 @@ Edit `~/.cursor/mcp.json`:
   "mcpServers": {
     "haruspex": {
       "command": "npx",
-      "args": ["-y", "@haruspex/mcp-server"],
+      "args": ["-y", "@haruspex-guru-sdk/mcp-server"],
       "env": { "HARUSPEX_API_KEY": "hrspx_live_a7c52f9315a65c377fec9c30b53f266b" }
     }
   }
@@ -61,7 +61,7 @@ Edit `~/.codeium/windsurf/mcp_config.json`:
   "mcpServers": {
     "haruspex": {
       "command": "npx",
-      "args": ["-y", "@haruspex/mcp-server"],
+      "args": ["-y", "@haruspex-guru-sdk/mcp-server"],
       "env": { "HARUSPEX_API_KEY": "hrspx_live_a7c52f9315a65c377fec9c30b53f266b" }
     }
   }
@@ -75,7 +75,7 @@ Any client that speaks MCP over stdio can use:
 | Field   | Value                              |
 | ------- | ---------------------------------- |
 | Command | `npx`                              |
-| Args    | `-y @haruspex/mcp-server`          |
+| Args    | `-y @haruspex-guru-sdk/mcp-server`          |
 | Env     | `HARUSPEX_API_KEY=hrspx_...`       |
 
 ## Tools

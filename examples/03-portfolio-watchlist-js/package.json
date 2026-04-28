@@ -7,6 +7,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@haruspex/sdk": "^0.1.0"
+    "@haruspex-guru-sdk/sdk": "^0.1.0"
   }
 }

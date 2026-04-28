@@ -84,7 +84,7 @@ function clampLimit(name: string, value: number | undefined, max: number): numbe
  *
  * @example
  * ```ts
- * import { Haruspex } from "@haruspex/sdk";
+ * import { Haruspex } from "@haruspex-guru-sdk/sdk";
  *
  * const client = new Haruspex({ apiKey: process.env.HARUSPEX_API_KEY });
  * const aapl = await client.scores.get("AAPL");

@@ -2,9 +2,9 @@
 
 > Stock intelligence scores (0–100) across 16 dimensions. Official SDK and API docs.
 
-[![npm](https://img.shields.io/npm/v/%40haruspex%2Fsdk?label=%40haruspex%2Fsdk)](https://www.npmjs.com/package/@haruspex/sdk)
+[![npm](https://img.shields.io/npm/v/%40haruspex%2Fsdk?label=%40haruspex%2Fsdk)](https://www.npmjs.com/package/@haruspex-guru-sdk/sdk)
 [![PyPI](https://img.shields.io/pypi/v/haruspex-sdk?label=haruspex-sdk)](https://pypi.org/project/haruspex-sdk/)
-[![npm mcp](https://img.shields.io/npm/v/%40haruspex%2Fmcp-server?label=%40haruspex%2Fmcp-server)](https://www.npmjs.com/package/@haruspex/mcp-server)
+[![npm mcp](https://img.shields.io/npm/v/%40haruspex%2Fmcp-server?label=%40haruspex%2Fmcp-server)](https://www.npmjs.com/package/@haruspex-guru-sdk/mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![CI](https://github.com/Haruspex-guru/haruspex-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Haruspex-guru/haruspex-sdk/actions/workflows/ci.yml)
 
@@ -48,7 +48,7 @@ Real response (captured 2026-04-28, truncated):
 **JavaScript / TypeScript:**
 
 ```bash
-npm install @haruspex/sdk
+npm install @haruspex-guru-sdk/sdk
 ```
 
 **Python:**
@@ -61,7 +61,7 @@ pip install haruspex-sdk
 
 ```ts
 // JS / TS
-import { Haruspex } from "@haruspex/sdk";
+import { Haruspex } from "@haruspex-guru-sdk/sdk";
 
 const client = new Haruspex({ apiKey: process.env.HARUSPEX_API_KEY });
 
@@ -134,7 +134,7 @@ The fastest way to evaluate Haruspex. Add this to
   "mcpServers": {
     "haruspex": {
       "command": "npx",
-      "args": ["-y", "@haruspex/mcp-server"],
+      "args": ["-y", "@haruspex-guru-sdk/mcp-server"],
       "env": { "HARUSPEX_API_KEY": "hrspx_live_a7c52f9315a65c377fec9c30b53f266b" }
     }
   }

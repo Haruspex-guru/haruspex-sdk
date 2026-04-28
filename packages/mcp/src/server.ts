@@ -1,4 +1,4 @@
-import { Haruspex } from "@haruspex/sdk";
+import { Haruspex } from "@haruspex-guru-sdk/sdk";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import {
   CallToolRequestSchema,

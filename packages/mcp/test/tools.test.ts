@@ -7,7 +7,7 @@ import {
   HaruspexAuthError,
   HaruspexNotFoundError,
   HaruspexRateLimitError,
-} from "@haruspex/sdk";
+} from "@haruspex-guru-sdk/sdk";
 import { handleToolCall, TOOL_DEFINITIONS } from "../src/tools.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

@@ -14,7 +14,7 @@ within 7 days.
 In scope:
 
 - This repository (`Haruspex-guru/haruspex-sdk`) and its published packages
-  (`@haruspex/sdk`, `haruspex-sdk` on PyPI, `@haruspex/mcp-server`).
+  (`@haruspex-guru-sdk/sdk`, `haruspex-sdk` on PyPI, `@haruspex-guru-sdk/mcp-server`).
 - Authentication, request signing, or transport behavior in the SDKs.
 - The OpenAPI spec, if it documents an unsafe pattern.
 

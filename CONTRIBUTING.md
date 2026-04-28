@@ -40,7 +40,7 @@ pytest
 ```
 
 The JS SDK and MCP server are in a pnpm workspace; the MCP server depends on
-`@haruspex/sdk` via `workspace:^` so changes to the SDK are picked up
+`@haruspex-guru-sdk/sdk` via `workspace:^` so changes to the SDK are picked up
 immediately.
 
 ## Running tests

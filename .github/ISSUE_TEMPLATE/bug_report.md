@@ -6,7 +6,7 @@ labels: bug
 ---
 
 **SDK + version**
-e.g. `@haruspex/sdk@0.1.0`, `haruspex-sdk==0.1.0`, or `@haruspex/mcp-server@0.1.0`
+e.g. `@haruspex-guru-sdk/sdk@0.1.0`, `haruspex-sdk==0.1.0`, or `@haruspex-guru-sdk/mcp-server@0.1.0`
 
 **Language and runtime**
 e.g. Node 20.10, Python 3.12, Bun 1.x

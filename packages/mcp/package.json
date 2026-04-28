@@ -1,5 +1,5 @@
 {
-  "name": "@haruspex/mcp-server",
+  "name": "@haruspex-guru-sdk/mcp-server",
   "version": "0.1.0",
   "description": "Official Haruspex MCP server. Use Haruspex stock scores in Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
   "license": "MIT",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "@haruspex/sdk": "workspace:^"
+    "@haruspex-guru-sdk/sdk": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^20.17.6",

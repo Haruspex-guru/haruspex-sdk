@@ -7,7 +7,7 @@ import {
   type Score,
   type SearchResultItem,
   type NewsArticle,
-} from "@haruspex/sdk";
+} from "@haruspex-guru-sdk/sdk";
 
 export const TOOL_DEFINITIONS = [
   {

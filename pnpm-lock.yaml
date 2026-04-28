@@ -28,7 +28,7 @@ importers:
 
   packages/mcp:
     dependencies:
-      '@haruspex/sdk':
+      '@haruspex-guru-sdk/sdk':
         specifier: workspace:^
         version: link:../js
       '@modelcontextprotocol/sdk':

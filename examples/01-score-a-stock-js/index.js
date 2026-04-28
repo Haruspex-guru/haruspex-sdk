@@ -1,4 +1,4 @@
-import { Haruspex } from "@haruspex/sdk";
+import { Haruspex } from "@haruspex-guru-sdk/sdk";
 
 const DEMO_KEY = "hrspx_live_a7c52f9315a65c377fec9c30b53f266b";
 

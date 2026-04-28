@@ -1,11 +1,11 @@
-# @haruspex/sdk
+# @haruspex-guru-sdk/sdk
 
 Official TypeScript / JavaScript SDK for the [Haruspex](https://haruspex.guru)
 API. Stock intelligence scores (0–100) across 16 dimensions, with outlook,
 trading signal, history, search, and news.
 
 ```bash
-npm install @haruspex/sdk
+npm install @haruspex-guru-sdk/sdk
 ```
 
 Node 18+ (uses the global `fetch`). Zero runtime dependencies. Ships ESM,
@@ -14,7 +14,7 @@ CJS, and `.d.ts`.
 ## Quickstart
 
 ```ts
-import { Haruspex } from "@haruspex/sdk";
+import { Haruspex } from "@haruspex-guru-sdk/sdk";
 
 const client = new Haruspex({
   apiKey: process.env.HARUSPEX_API_KEY,
