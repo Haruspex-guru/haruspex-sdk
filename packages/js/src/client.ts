@@ -112,7 +112,7 @@ export class Haruspex {
     this.timeoutMs = options.timeoutMs ?? 10_000;
     this.maxRetries = options.maxRetries ?? 2;
     this.fetchImpl = options.fetch ?? globalThis.fetch;
-    this.userAgent = options.userAgent ?? "haruspex-sdk-js/0.1.1";
+    this.userAgent = options.userAgent ?? "haruspex-sdk-js/0.1.2";
 
     if (typeof this.fetchImpl !== "function") {
       throw new HaruspexValidationError(
