@@ -24,12 +24,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @haruspex-guru-sdk/sdk build
       - run: pnpm --filter @haruspex-guru-sdk/mcp-server build
+      # npm trusted publishing: OIDC handles auth via id-token: write +
+      # the trusted publisher configured on each package on npmjs.com.
+      # No NODE_AUTH_TOKEN needed.
       - run: pnpm --filter @haruspex-guru-sdk/sdk publish --provenance --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - run: pnpm --filter @haruspex-guru-sdk/mcp-server publish --provenance --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
   publish-pypi:
     name: Publish to PyPI
