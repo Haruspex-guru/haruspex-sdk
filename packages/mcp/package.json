@@ -1,0 +1,53 @@
+{
+  "name": "@haruspex/mcp-server",
+  "version": "0.1.0",
+  "description": "Official Haruspex MCP server. Use Haruspex stock scores in Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "haruspex-mcp-server": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "haruspex",
+    "stocks",
+    "finance",
+    "ai"
+  ],
+  "homepage": "https://haruspex.guru",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haruspex-guru/haruspex-sdk.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/Haruspex-guru/haruspex-sdk/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@haruspex/sdk": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}

@@ -1,0 +1,20 @@
+# Haruspex SDK
+
+> Official Haruspex SDK. Stock intelligence scores (0-100) across 16 dimensions, exposed as a JSON API with TypeScript and Python clients and an MCP server.
+
+## Quickstart
+- [README](./README.md): install, authenticate, and call the API in 30 seconds
+- [TypeScript SDK](./packages/js/README.md)
+- [Python SDK](./packages/python/README.md)
+- [MCP server](./packages/mcp/README.md): use Haruspex from Claude Desktop, Cursor, Windsurf, or any MCP-compatible client
+
+## API Reference
+- [OpenAPI 3.1 spec](./openapi.yaml)
+
+## Examples
+- [Index of runnable examples](./examples/README.md)
+
+## Optional
+- [Contributing](./CONTRIBUTING.md)
+- [Changelog](./CHANGELOG.md)
+- [Security](./SECURITY.md)

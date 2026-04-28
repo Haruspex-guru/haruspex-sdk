@@ -1,0 +1,36 @@
+{
+  "status": "success",
+  "data": {
+    "results": [
+      {
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "exchange": "NASDAQ",
+        "type": "stock"
+      },
+      {
+        "symbol": "APLE",
+        "name": "Apple Hospitality REIT, Inc.",
+        "exchange": "NYSE",
+        "type": "stock"
+      },
+      {
+        "symbol": "APC.DE",
+        "name": "Apple Inc.                    R",
+        "exchange": "XETRA",
+        "type": "stock"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "req_fixture_search",
+    "timestamp": "2026-04-28T08:53:57.796Z",
+    "creditsUsed": 1,
+    "creditsRemaining": 38618,
+    "rateLimit": {
+      "limit": 60,
+      "remaining": 56,
+      "resetAt": "2026-04-28T08:54:00.000Z"
+    }
+  }
+}

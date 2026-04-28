@@ -1,0 +1,57 @@
+{
+  "name": "@haruspex/sdk",
+  "version": "0.1.0",
+  "description": "Official Haruspex SDK. Stock intelligence scores (0-100) across 16 dimensions.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "haruspex",
+    "stocks",
+    "finance",
+    "intelligence",
+    "scoring",
+    "sdk",
+    "api"
+  ],
+  "homepage": "https://haruspex.guru",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haruspex-guru/haruspex-sdk.git",
+    "directory": "packages/js"
+  },
+  "bugs": {
+    "url": "https://github.com/Haruspex-guru/haruspex-sdk/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5",
+    "msw": "^2.6.6"
+  }
+}

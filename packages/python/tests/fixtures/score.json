@@ -1,0 +1,111 @@
+{
+  "status": "success",
+  "data": {
+    "symbol": "AAPL",
+    "name": null,
+    "score": 75,
+    "previousScore": 79,
+    "change": -4,
+    "outlook": "bullish",
+    "signal": "buy",
+    "topicScores": {
+      "ai-exposure": {
+        "name": "ai-exposure",
+        "score": 57,
+        "change": 0
+      },
+      "climate-risk": {
+        "name": "climate-risk",
+        "score": 64,
+        "change": 11
+      },
+      "competitors": {
+        "name": "competitors",
+        "score": 68,
+        "change": 0
+      },
+      "concentration-risk": {
+        "name": "concentration-risk",
+        "score": 45,
+        "change": 0
+      },
+      "earnings": {
+        "name": "earnings",
+        "score": 72,
+        "change": 4
+      },
+      "esg": {
+        "name": "esg",
+        "score": 0,
+        "change": 0
+      },
+      "github-activity": {
+        "name": "github-activity",
+        "score": 59,
+        "change": 0
+      },
+      "insider-trading": {
+        "name": "insider-trading",
+        "score": 50,
+        "change": 0
+      },
+      "institutional": {
+        "name": "institutional",
+        "score": 65,
+        "change": 0
+      },
+      "macro": {
+        "name": "macro",
+        "score": 62,
+        "change": -3
+      },
+      "management": {
+        "name": "management",
+        "score": 49,
+        "change": 0
+      },
+      "patents": {
+        "name": "patents",
+        "score": 50,
+        "change": 0
+      },
+      "regulatory": {
+        "name": "regulatory",
+        "score": 65,
+        "change": 0
+      },
+      "supplychain": {
+        "name": "supplychain",
+        "score": 44,
+        "change": 0
+      },
+      "us_china_official": {
+        "name": "us_china_official",
+        "score": 35,
+        "change": 0
+      },
+      "us_china_unofficial": {
+        "name": "us_china_unofficial",
+        "score": 35,
+        "change": 0
+      }
+    },
+    "date": "2026-04-28",
+    "analyzedAt": "2026-04-28T05:01:30.539Z",
+    "tradingTimeline": "investment",
+    "cached": true,
+    "version": "1.0",
+    "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+  },
+  "meta": {
+    "requestId": "req_fixture_score",
+    "timestamp": "2026-04-28T08:53:54.979Z",
+    "creditsUsed": 1,
+    "creditsRemaining": 38624,
+    "rateLimit": {
+      "limit": 60,
+      "remaining": 59,
+      "resetAt": "2026-04-28T08:54:00.000Z"
+    }
+  }
+}

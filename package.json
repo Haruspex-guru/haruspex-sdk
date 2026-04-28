@@ -1,0 +1,16 @@
+{
+  "name": "haruspex-sdk-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Workspace root for the Haruspex SDK monorepo. The published packages live under packages/.",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm -r --filter ./packages/** build",
+    "test": "pnpm -r --filter ./packages/** test",
+    "lint": "pnpm -r --filter ./packages/** lint"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=18"
+  }
+}

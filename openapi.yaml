@@ -1,0 +1,425 @@
+openapi: 3.1.0
+info:
+  title: Haruspex API
+  version: "1.0.0"
+  summary: Stock intelligence scores (0-100) across 16 dimensions.
+  description: |
+    The Haruspex API returns daily intelligence scores for publicly traded
+    stocks. Each score (0-100) is accompanied by an outlook, a trading
+    signal, and a breakdown across 16 topic dimensions.
+
+    All endpoints return a uniform envelope: a `status` field, a `data`
+    payload that varies per endpoint, and a `meta` block carrying
+    `requestId`, credit usage, and rate-limit headroom.
+
+    Authentication is a single bearer token. Get a free key at
+    https://haruspex.guru/developers.
+  contact:
+    name: Haruspex
+    url: https://haruspex.guru
+    email: support@haruspex.guru
+  license:
+    name: MIT (SDK source) / proprietary (API service)
+    url: https://github.com/Haruspex-guru/haruspex-sdk/blob/main/LICENSE
+
+servers:
+  - url: https://haruspex.guru/api/v1
+    description: Production
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Scores
+    description: Latest, batch, and historical intelligence scores.
+  - name: Search
+    description: Find tickers by symbol or company name.
+  - name: News
+    description: Recent news articles for a ticker.
+
+paths:
+  /scores/{symbol}:
+    get:
+      operationId: getScore
+      tags: [Scores]
+      summary: Get the latest score for one ticker.
+      parameters:
+        - $ref: "#/components/parameters/Symbol"
+      responses:
+        "200":
+          description: Latest score.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoreEnvelope"
+              examples:
+                aapl:
+                  summary: Latest score for AAPL
+                  value:
+                    status: success
+                    data:
+                      symbol: AAPL
+                      name: null
+                      score: 75
+                      previousScore: 79
+                      change: -4
+                      outlook: bullish
+                      signal: buy
+                      topicScores:
+                        ai-exposure: { name: ai-exposure, score: 57, change: 0 }
+                        earnings: { name: earnings, score: 72, change: 4 }
+                      date: "2026-04-28"
+                      analyzedAt: "2026-04-28T05:01:30.539Z"
+                      tradingTimeline: investment
+                      cached: true
+                      version: "1.0"
+                      shareUrl: https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR
+                    meta:
+                      requestId: req_fixture_score
+                      timestamp: "2026-04-28T08:04:12.298Z"
+                      creditsUsed: 1
+                      creditsRemaining: 38632
+                      rateLimit:
+                        limit: 60
+                        remaining: 59
+                        resetAt: "2026-04-28T08:05:00.000Z"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "5XX": { $ref: "#/components/responses/ServerError" }
+
+  /scores/batch:
+    post:
+      operationId: getBatchScores
+      tags: [Scores]
+      summary: Get the latest scores for up to 50 tickers in one request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [symbols]
+              properties:
+                symbols:
+                  type: array
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: string
+                    pattern: "^[A-Za-z0-9.\\-]{1,12}$"
+            examples:
+              three:
+                value:
+                  symbols: [AAPL, NVDA, MSFT]
+      responses:
+        "200":
+          description: Latest scores.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [count, scores]
+                        properties:
+                          count: { type: integer, minimum: 0 }
+                          scores:
+                            type: array
+                            items: { $ref: "#/components/schemas/Score" }
+        "400": { $ref: "#/components/responses/Validation" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "5XX": { $ref: "#/components/responses/ServerError" }
+
+  /scores/{symbol}/history:
+    get:
+      operationId: getScoreHistory
+      tags: [Scores]
+      summary: Get historical daily scores for a ticker.
+      parameters:
+        - $ref: "#/components/parameters/Symbol"
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+          description: Start of range (inclusive). YYYY-MM-DD.
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+          description: End of range (inclusive). YYYY-MM-DD.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 90
+            default: 30
+      responses:
+        "200":
+          description: Historical scores.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [symbol, count, scores]
+                        properties:
+                          symbol: { type: string }
+                          from: { type: string, format: date }
+                          to: { type: string, format: date }
+                          count: { type: integer }
+                          scores:
+                            type: array
+                            items: { $ref: "#/components/schemas/Score" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "5XX": { $ref: "#/components/responses/ServerError" }
+
+  /search:
+    get:
+      operationId: searchSymbols
+      tags: [Search]
+      summary: Search tickers by symbol or company name.
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 1 }
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [results]
+                        properties:
+                          results:
+                            type: array
+                            items: { $ref: "#/components/schemas/SearchResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "5XX": { $ref: "#/components/responses/ServerError" }
+
+  /stocks/{symbol}/news:
+    get:
+      operationId: getNews
+      tags: [News]
+      summary: Get recent news articles for a ticker.
+      parameters:
+        - $ref: "#/components/parameters/Symbol"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: News articles.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [symbol, articles]
+                        properties:
+                          symbol: { type: string }
+                          articles:
+                            type: array
+                            items: { $ref: "#/components/schemas/Article" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "5XX": { $ref: "#/components/responses/ServerError" }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: |
+        Pass `Authorization: Bearer <API_KEY>` on every request. Get a free
+        key at https://haruspex.guru/developers, or evaluate using the public
+        demo key documented in the SDK README.
+
+  parameters:
+    Symbol:
+      in: path
+      name: symbol
+      required: true
+      schema:
+        type: string
+        pattern: "^[A-Za-z0-9.\\-]{1,12}$"
+      description: Ticker symbol. Case-insensitive; SDK uppercases before sending.
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    NotFound:
+      description: Ticker not present in the scoring universe.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Validation:
+      description: Request body or parameters failed validation.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    RateLimited:
+      description: Per-minute or per-key rate limit exceeded.
+      headers:
+        Retry-After:
+          schema: { type: integer }
+          description: Seconds to wait before retrying.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+
+  schemas:
+    Envelope:
+      type: object
+      required: [status, data, meta]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data: {}
+        meta: { $ref: "#/components/schemas/Meta" }
+
+    ScoreEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            data: { $ref: "#/components/schemas/Score" }
+
+    ErrorEnvelope:
+      type: object
+      required: [status, error]
+      properties:
+        status:
+          type: string
+          enum: [error]
+        error:
+          type: object
+          required: [message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+        meta: { $ref: "#/components/schemas/Meta" }
+
+    Meta:
+      type: object
+      required: [requestId, timestamp]
+      properties:
+        requestId: { type: string }
+        timestamp: { type: string, format: date-time }
+        creditsUsed: { type: integer }
+        creditsRemaining: { type: integer }
+        rateLimit: { $ref: "#/components/schemas/RateLimit" }
+
+    RateLimit:
+      type: object
+      properties:
+        limit: { type: integer }
+        remaining: { type: integer }
+        resetAt: { type: string, format: date-time }
+
+    TopicScore:
+      type: object
+      required: [name, score, change]
+      properties:
+        name: { type: string }
+        score: { type: integer, minimum: 0, maximum: 100 }
+        change: { type: integer }
+
+    Score:
+      type: object
+      required:
+        - symbol
+        - score
+        - outlook
+        - signal
+        - date
+        - topicScores
+      properties:
+        symbol: { type: string }
+        name:
+          type: ["string", "null"]
+        score: { type: integer, minimum: 0, maximum: 100 }
+        previousScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        change: { type: integer }
+        outlook:
+          type: string
+          enum: [bullish, neutral, bearish]
+        signal:
+          type: string
+          enum: [buy, hold, sell]
+        topicScores:
+          type: object
+          additionalProperties: { $ref: "#/components/schemas/TopicScore" }
+        date: { type: string, format: date }
+        analyzedAt: { type: string, format: date-time }
+        tradingTimeline:
+          type: string
+          description: Time horizon. Known values include `investment`, `swing`, `intraday`.
+        cached: { type: boolean }
+        version: { type: string }
+        shareUrl: { type: string, format: uri }
+
+    SearchResult:
+      type: object
+      required: [symbol, name]
+      properties:
+        symbol: { type: string }
+        name: { type: string }
+        exchange: { type: string }
+        type: { type: string }
+
+    Article:
+      type: object
+      required: [title, url]
+      properties:
+        title: { type: string }
+        url: { type: string, format: uri }
+        publishedAt: { type: string, format: date-time }
+        source: { type: string }
+        image: { type: string, format: uri }

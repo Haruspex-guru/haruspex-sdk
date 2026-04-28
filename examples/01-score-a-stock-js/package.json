@@ -1,0 +1,12 @@
+{
+  "name": "haruspex-example-score-a-stock-js",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@haruspex/sdk": "^0.1.0"
+  }
+}

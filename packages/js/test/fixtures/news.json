@@ -1,0 +1,40 @@
+{
+  "status": "success",
+  "data": {
+    "symbol": "AAPL",
+    "articles": [
+      {
+        "title": "Fed News and Big Tech Earnings Collide This Week. The Mag 7 Matter Most.",
+        "url": "https://finance.yahoo.com/m/522d58f3-e7ae-3fc7-a168-d77e87a0ef5e/fed-news-and-big-tech.html",
+        "publishedAt": "2026-04-28T05:30:00.000Z",
+        "source": "Barrons.com",
+        "image": "https://s.yimg.com/uu/api/res/1.2/0oWkRm5p.w_JRiu9YPRr3g--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/6242f27ff955365a6f4f7191e413216c"
+      },
+      {
+        "title": "Options Traders Are on Edge About Wild Wednesday. Here Are 2 Smart Moves.",
+        "url": "https://finance.yahoo.com/m/d90ae489-094d-325f-8c93-c6b551f7724d/options-traders-are-on-edge.html",
+        "publishedAt": "2026-04-28T05:30:00.000Z",
+        "source": "Barrons.com",
+        "image": "https://s.yimg.com/uu/api/res/1.2/o6sph7tEwhvNcDVdhf2zLw--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/a48085a3fab2c53f9afb86a7c2450a7c"
+      },
+      {
+        "title": "Is Apple Inc. (AAPL) the Best Big Name Stock to Buy?",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/apple-inc-aapl-best-big-043815205.html",
+        "publishedAt": "2026-04-28T04:38:15.000Z",
+        "source": "Insider Monkey",
+        "image": "https://s.yimg.com/uu/api/res/1.2/ZW3fq6JkBYqEx9N2Vum6qQ--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/410ac07c4c90786d8592963501a2ed84"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "req_fixture_news",
+    "timestamp": "2026-04-28T08:53:58.692Z",
+    "creditsUsed": 1,
+    "creditsRemaining": 38617,
+    "rateLimit": {
+      "limit": 60,
+      "remaining": 55,
+      "resetAt": "2026-04-28T08:54:00.000Z"
+    }
+  }
+}

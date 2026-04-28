@@ -1,0 +1,507 @@
+{
+  "status": "success",
+  "data": {
+    "symbol": "AAPL",
+    "from": "2026-04-23",
+    "to": "2026-04-28",
+    "count": 5,
+    "scores": [
+      {
+        "symbol": "AAPL",
+        "name": null,
+        "score": 75,
+        "previousScore": 79,
+        "change": -4,
+        "outlook": "bullish",
+        "signal": "buy",
+        "topicScores": {
+          "ai-exposure": {
+            "name": "ai-exposure",
+            "score": 57,
+            "change": 0
+          },
+          "climate-risk": {
+            "name": "climate-risk",
+            "score": 64,
+            "change": 11
+          },
+          "competitors": {
+            "name": "competitors",
+            "score": 68,
+            "change": 0
+          },
+          "concentration-risk": {
+            "name": "concentration-risk",
+            "score": 45,
+            "change": 0
+          },
+          "earnings": {
+            "name": "earnings",
+            "score": 72,
+            "change": 4
+          },
+          "esg": {
+            "name": "esg",
+            "score": 0,
+            "change": 0
+          },
+          "github-activity": {
+            "name": "github-activity",
+            "score": 59,
+            "change": 0
+          },
+          "insider-trading": {
+            "name": "insider-trading",
+            "score": 50,
+            "change": 0
+          },
+          "institutional": {
+            "name": "institutional",
+            "score": 65,
+            "change": 0
+          },
+          "macro": {
+            "name": "macro",
+            "score": 62,
+            "change": -3
+          },
+          "management": {
+            "name": "management",
+            "score": 49,
+            "change": 0
+          },
+          "patents": {
+            "name": "patents",
+            "score": 50,
+            "change": 0
+          },
+          "regulatory": {
+            "name": "regulatory",
+            "score": 65,
+            "change": 0
+          },
+          "supplychain": {
+            "name": "supplychain",
+            "score": 44,
+            "change": 0
+          },
+          "us_china_official": {
+            "name": "us_china_official",
+            "score": 35,
+            "change": 0
+          },
+          "us_china_unofficial": {
+            "name": "us_china_unofficial",
+            "score": 35,
+            "change": 0
+          }
+        },
+        "date": "2026-04-28",
+        "analyzedAt": "2026-04-28T05:01:30.539Z",
+        "tradingTimeline": "investment",
+        "cached": true,
+        "version": "1.0",
+        "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+      },
+      {
+        "symbol": "AAPL",
+        "name": null,
+        "score": 79,
+        "previousScore": 68,
+        "change": 11,
+        "outlook": "bullish",
+        "signal": "buy",
+        "topicScores": {
+          "ai-exposure": {
+            "name": "ai-exposure",
+            "score": 57,
+            "change": 0
+          },
+          "climate-risk": {
+            "name": "climate-risk",
+            "score": 53,
+            "change": 0
+          },
+          "competitors": {
+            "name": "competitors",
+            "score": 72,
+            "change": 0
+          },
+          "concentration-risk": {
+            "name": "concentration-risk",
+            "score": 45,
+            "change": 0
+          },
+          "earnings": {
+            "name": "earnings",
+            "score": 72,
+            "change": 0
+          },
+          "esg": {
+            "name": "esg",
+            "score": 0,
+            "change": 0
+          },
+          "github-activity": {
+            "name": "github-activity",
+            "score": 56,
+            "change": 0
+          },
+          "insider-trading": {
+            "name": "insider-trading",
+            "score": 23,
+            "change": 0
+          },
+          "institutional": {
+            "name": "institutional",
+            "score": 62,
+            "change": 0
+          },
+          "macro": {
+            "name": "macro",
+            "score": 65,
+            "change": 0
+          },
+          "management": {
+            "name": "management",
+            "score": 49,
+            "change": 0
+          },
+          "patents": {
+            "name": "patents",
+            "score": 50,
+            "change": 0
+          },
+          "regulatory": {
+            "name": "regulatory",
+            "score": 72,
+            "change": 0
+          },
+          "supplychain": {
+            "name": "supplychain",
+            "score": 44,
+            "change": 0
+          },
+          "us_china_official": {
+            "name": "us_china_official",
+            "score": 35,
+            "change": 0
+          },
+          "us_china_unofficial": {
+            "name": "us_china_unofficial",
+            "score": 35,
+            "change": 0
+          }
+        },
+        "date": "2026-04-27",
+        "analyzedAt": "2026-04-27T17:58:35.920Z",
+        "tradingTimeline": "investment",
+        "cached": true,
+        "version": "1.0",
+        "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+      },
+      {
+        "symbol": "AAPL",
+        "name": null,
+        "score": 68,
+        "previousScore": 67,
+        "change": 1,
+        "outlook": "bullish",
+        "signal": "buy",
+        "topicScores": {
+          "ai-exposure": {
+            "name": "ai-exposure",
+            "score": 57,
+            "change": 0
+          },
+          "climate-risk": {
+            "name": "climate-risk",
+            "score": 55,
+            "change": 0
+          },
+          "competitors": {
+            "name": "competitors",
+            "score": 70,
+            "change": 0
+          },
+          "concentration-risk": {
+            "name": "concentration-risk",
+            "score": 45,
+            "change": 0
+          },
+          "earnings": {
+            "name": "earnings",
+            "score": 78,
+            "change": 0
+          },
+          "esg": {
+            "name": "esg",
+            "score": 0,
+            "change": 0
+          },
+          "github-activity": {
+            "name": "github-activity",
+            "score": 58,
+            "change": 0
+          },
+          "insider-trading": {
+            "name": "insider-trading",
+            "score": 35,
+            "change": 0
+          },
+          "institutional": {
+            "name": "institutional",
+            "score": 60,
+            "change": 0
+          },
+          "macro": {
+            "name": "macro",
+            "score": 65,
+            "change": 0
+          },
+          "management": {
+            "name": "management",
+            "score": 45,
+            "change": 0
+          },
+          "patents": {
+            "name": "patents",
+            "score": 50,
+            "change": 0
+          },
+          "regulatory": {
+            "name": "regulatory",
+            "score": 68,
+            "change": 0
+          },
+          "supplychain": {
+            "name": "supplychain",
+            "score": 48,
+            "change": 0
+          },
+          "us_china_official": {
+            "name": "us_china_official",
+            "score": 35,
+            "change": 0
+          },
+          "us_china_unofficial": {
+            "name": "us_china_unofficial",
+            "score": 35,
+            "change": 0
+          }
+        },
+        "date": "2026-04-26",
+        "analyzedAt": "2026-04-26T05:01:07.696Z",
+        "tradingTimeline": "investment",
+        "cached": true,
+        "version": "1.0",
+        "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+      },
+      {
+        "symbol": "AAPL",
+        "name": null,
+        "score": 67,
+        "previousScore": 51,
+        "change": 16,
+        "outlook": "bullish",
+        "signal": "buy",
+        "topicScores": {
+          "ai-exposure": {
+            "name": "ai-exposure",
+            "score": 57,
+            "change": 0
+          },
+          "climate-risk": {
+            "name": "climate-risk",
+            "score": 55,
+            "change": 0
+          },
+          "competitors": {
+            "name": "competitors",
+            "score": 70,
+            "change": 0
+          },
+          "concentration-risk": {
+            "name": "concentration-risk",
+            "score": 45,
+            "change": 0
+          },
+          "earnings": {
+            "name": "earnings",
+            "score": 78,
+            "change": 0
+          },
+          "esg": {
+            "name": "esg",
+            "score": 0,
+            "change": 0
+          },
+          "github-activity": {
+            "name": "github-activity",
+            "score": 62,
+            "change": 0
+          },
+          "insider-trading": {
+            "name": "insider-trading",
+            "score": 32,
+            "change": 0
+          },
+          "institutional": {
+            "name": "institutional",
+            "score": 60,
+            "change": 0
+          },
+          "macro": {
+            "name": "macro",
+            "score": 65,
+            "change": 0
+          },
+          "management": {
+            "name": "management",
+            "score": 45,
+            "change": 0
+          },
+          "patents": {
+            "name": "patents",
+            "score": 50,
+            "change": 0
+          },
+          "regulatory": {
+            "name": "regulatory",
+            "score": 68,
+            "change": 0
+          },
+          "supplychain": {
+            "name": "supplychain",
+            "score": 45,
+            "change": 0
+          },
+          "us_china_official": {
+            "name": "us_china_official",
+            "score": 35,
+            "change": 0
+          },
+          "us_china_unofficial": {
+            "name": "us_china_unofficial",
+            "score": 62,
+            "change": 0
+          }
+        },
+        "date": "2026-04-25",
+        "analyzedAt": "2026-04-25T05:01:18.707Z",
+        "tradingTimeline": "investment",
+        "cached": true,
+        "version": "1.0",
+        "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+      },
+      {
+        "symbol": "AAPL",
+        "name": null,
+        "score": 51,
+        "previousScore": 77,
+        "change": -26,
+        "outlook": "neutral",
+        "signal": "hold",
+        "topicScores": {
+          "ai-exposure": {
+            "name": "ai-exposure",
+            "score": 55,
+            "change": 0
+          },
+          "climate-risk": {
+            "name": "climate-risk",
+            "score": 53,
+            "change": -1
+          },
+          "competitors": {
+            "name": "competitors",
+            "score": 59,
+            "change": -5
+          },
+          "concentration-risk": {
+            "name": "concentration-risk",
+            "score": 47,
+            "change": 0
+          },
+          "earnings": {
+            "name": "earnings",
+            "score": 57,
+            "change": -8
+          },
+          "esg": {
+            "name": "esg",
+            "score": 36,
+            "change": 0
+          },
+          "fundamentals": {
+            "name": "fundamentals",
+            "score": 56,
+            "change": 4
+          },
+          "insider-trading": {
+            "name": "insider-trading",
+            "score": 29,
+            "change": 0
+          },
+          "institutional": {
+            "name": "institutional",
+            "score": 58,
+            "change": 2
+          },
+          "macro": {
+            "name": "macro",
+            "score": 56,
+            "change": -7
+          },
+          "management": {
+            "name": "management",
+            "score": 48,
+            "change": -1
+          },
+          "patents": {
+            "name": "patents",
+            "score": 50,
+            "change": 0
+          },
+          "regulatory": {
+            "name": "regulatory",
+            "score": 57,
+            "change": -3
+          },
+          "supplychain": {
+            "name": "supplychain",
+            "score": 46,
+            "change": -8
+          },
+          "us_china_official": {
+            "name": "us_china_official",
+            "score": 48,
+            "change": 0
+          },
+          "us_china_unofficial": {
+            "name": "us_china_unofficial",
+            "score": 62,
+            "change": 33
+          }
+        },
+        "date": "2026-04-24",
+        "analyzedAt": "2026-04-24T13:31:25.130Z",
+        "tradingTimeline": "investment",
+        "cached": true,
+        "version": "1.0",
+        "shareUrl": "https://haruspex.guru/s/Ib70IGTaXpXtFIj0D7_vrnrR"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "req_fixture_history",
+    "timestamp": "2026-04-28T08:53:56.754Z",
+    "creditsUsed": 2,
+    "creditsRemaining": 38619,
+    "rateLimit": {
+      "limit": 60,
+      "remaining": 57,
+      "resetAt": "2026-04-28T08:54:00.000Z"
+    }
+  }
+}
