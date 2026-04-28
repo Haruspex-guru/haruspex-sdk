@@ -17,11 +17,11 @@ export function buildServer(options: BuildServerOptions): Server {
     options.client ??
     new Haruspex({
       apiKey: options.apiKey,
-      userAgent: "haruspex-mcp-server/0.1.0",
+      userAgent: "haruspex-mcp-server/0.1.1",
     });
 
   const server = new Server(
-    { name: "haruspex", version: "0.1.0" },
+    { name: "haruspex", version: "0.1.1" },
     { capabilities: { tools: {} } },
   );
 

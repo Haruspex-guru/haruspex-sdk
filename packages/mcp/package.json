@@ -1,6 +1,6 @@
 {
   "name": "@haruspex-guru-sdk/mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official Haruspex MCP server. Use Haruspex stock scores in Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
   "license": "MIT",
   "type": "module",

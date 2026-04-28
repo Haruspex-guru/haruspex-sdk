@@ -6,6 +6,14 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-04-28
+
+### Changed
+
+- First release published from the GitHub Actions `publish` workflow via
+  npm and PyPI trusted publishing (OIDC). No code changes from 0.1.0; the
+  bump exists to validate the automated publish pipeline.
+
 ## [0.1.0] - 2026-04-28
 
 ### Added
@@ -27,5 +35,6 @@ project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Captured-response test fixtures and `scripts/capture-fixtures.sh` for
   re-capturing them against the live API.
 
-[Unreleased]: https://github.com/Haruspex-guru/haruspex-sdk/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Haruspex-guru/haruspex-sdk/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Haruspex-guru/haruspex-sdk/releases/tag/v0.1.0
