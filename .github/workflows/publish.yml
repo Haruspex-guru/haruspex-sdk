@@ -24,18 +24,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @haruspex-guru-sdk/sdk build
       - run: pnpm --filter @haruspex-guru-sdk/mcp-server build
-      # npm trusted publishing: OIDC handles auth via id-token: write +
-      # the trusted publisher configured on each package on npmjs.com.
-      # We use `npm publish` directly (not `pnpm publish`) because pnpm's
-      # publish flow doesn't currently surface the OIDC token to the npm
-      # registry; npm publish does the right thing automatically when
-      # id-token: write is granted.
+      # Token-based publish. NODE_AUTH_TOKEN is wired automatically by
+      # actions/setup-node into ~/.npmrc when registry-url is set above.
+      # --provenance still works because id-token: write is granted, and
+      # npm signs the provenance attestation independently of the auth
+      # method used for the publish itself.
       - name: Publish @haruspex-guru-sdk/sdk
         working-directory: packages/js
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish @haruspex-guru-sdk/mcp-server
         working-directory: packages/mcp
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-pypi:
     name: Publish to PyPI
