@@ -4,7 +4,9 @@ import {
   MAX_HISTORY_LIMIT,
   MAX_NEWS_LIMIT,
   MAX_SEARCH_LIMIT,
+  SDK_VERSION,
 } from "./constants.js";
+import { TelemetryClient, templatize, type TelemetryOptions } from "./telemetry.js";
 import {
   HaruspexAuthError,
   HaruspexError,
@@ -36,6 +38,7 @@ export interface HaruspexOptions {
   maxRetries?: number;
   fetch?: typeof fetch;
   userAgent?: string;
+  telemetry?: TelemetryOptions;
 }
 
 const RETRYABLE_STATUSES = new Set([429, 502, 503, 504]);
@@ -99,6 +102,7 @@ export class Haruspex {
   private readonly apiKey: string;
   private readonly fetchImpl: typeof fetch;
   private readonly userAgent: string;
+  private readonly telemetry: TelemetryClient;
 
   constructor(options: HaruspexOptions = {}) {
     const apiKey = options.apiKey ?? process.env.HARUSPEX_API_KEY;
@@ -112,20 +116,32 @@ export class Haruspex {
     this.timeoutMs = options.timeoutMs ?? 10_000;
     this.maxRetries = options.maxRetries ?? 2;
     this.fetchImpl = options.fetch ?? globalThis.fetch;
-    this.userAgent = options.userAgent ?? "haruspex-sdk-js/0.1.3";
+    this.userAgent = options.userAgent ?? `haruspex-sdk-js/${SDK_VERSION}`;
 
     if (typeof this.fetchImpl !== "function") {
       throw new HaruspexValidationError(
         "No fetch implementation available. Pass `fetch` in options on Node < 18.",
       );
     }
+
+    this.telemetry = new TelemetryClient({
+      apiKey: this.apiKey,
+      sdkName: "js",
+      sdkVersion: SDK_VERSION,
+      options: options.telemetry,
+    });
   }
 
   readonly scores = {
     /** Latest score for one ticker. */
     get: (symbol: string): Promise<ScoreResponse> => {
       const sym = normalizeSymbol(symbol);
-      return this.request<ScoreResponse>("GET", `/scores/${encodeURIComponent(sym)}`);
+      return this.request<ScoreResponse>(
+        "GET",
+        `/scores/${encodeURIComponent(sym)}`,
+        undefined,
+        { symbolOrQuery: sym },
+      );
     },
 
     /** Latest scores for up to 50 tickers. */
@@ -137,7 +153,12 @@ export class Haruspex {
         throw new HaruspexValidationError(`symbols length must be <= ${MAX_BATCH}`);
       }
       const normalized = symbols.map(normalizeSymbol);
-      return this.request<BatchResponse>("POST", "/scores/batch", { symbols: normalized });
+      return this.request<BatchResponse>(
+        "POST",
+        "/scores/batch",
+        { symbols: normalized },
+        { symbolOrQuery: normalized.join(",") },
+      );
     },
 
     /** Historical daily scores. */
@@ -150,7 +171,7 @@ export class Haruspex {
       if (limit !== undefined) query.set("limit", String(limit));
       const qs = query.toString();
       const path = `/scores/${encodeURIComponent(sym)}/history${qs ? `?${qs}` : ""}`;
-      return this.request<HistoryResponse>("GET", path);
+      return this.request<HistoryResponse>("GET", path, undefined, { symbolOrQuery: sym });
     },
   };
 
@@ -162,7 +183,9 @@ export class Haruspex {
     const limit = clampLimit("limit", opts.limit, MAX_SEARCH_LIMIT);
     const params = new URLSearchParams({ q: query.trim() });
     if (limit !== undefined) params.set("limit", String(limit));
-    return this.request<SearchResponse>("GET", `/search?${params.toString()}`);
+    return this.request<SearchResponse>("GET", `/search?${params.toString()}`, undefined, {
+      symbolOrQuery: query.trim(),
+    });
   }
 
   /** Recent news articles for a ticker. */
@@ -173,20 +196,21 @@ export class Haruspex {
     if (limit !== undefined) params.set("limit", String(limit));
     const qs = params.toString();
     const path = `/stocks/${encodeURIComponent(sym)}/news${qs ? `?${qs}` : ""}`;
-    return this.request<NewsResponse>("GET", path);
+    return this.request<NewsResponse>("GET", path, undefined, { symbolOrQuery: sym });
   }
 
   private async request<T extends WithMeta<unknown>>(
     method: string,
     path: string,
     body?: unknown,
+    meta?: { symbolOrQuery?: string },
   ): Promise<T> {
     let attempt = 0;
     let lastError: unknown;
 
     while (attempt <= this.maxRetries) {
       try {
-        return await this.requestOnce<T>(method, path, body);
+        return await this.requestOnce<T>(method, path, body, meta);
       } catch (err) {
         lastError = err;
         const retryable = this.isRetryable(err);
@@ -218,10 +242,29 @@ export class Haruspex {
     method: string,
     path: string,
     body?: unknown,
+    meta?: { symbolOrQuery?: string },
   ): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    const start =
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now();
+    const recordEvent = (status: number, errType: string | null): void => {
+      const now =
+        typeof performance !== "undefined" && typeof performance.now === "function"
+          ? performance.now()
+          : Date.now();
+      this.telemetry.record({
+        event_type: "request",
+        endpoint: templatize(method, path),
+        symbol_or_query: meta?.symbolOrQuery,
+        http_status: status,
+        latency_ms: Math.max(0, Math.round(now - start)),
+        error_type: errType,
+      });
+    };
 
     let response: Response;
     try {
@@ -237,6 +280,7 @@ export class Haruspex {
         signal: controller.signal,
       });
     } catch (err) {
+      recordEvent(0, "HaruspexNetworkError");
       throw new HaruspexNetworkError(
         err instanceof Error ? err.message : "Network request failed",
         { status: 0 },
@@ -254,24 +298,29 @@ export class Haruspex {
     }
 
     if (!response.ok) {
-      throw this.errorFor(response, parsed);
+      const e = this.errorFor(response, parsed);
+      recordEvent(response.status, e.name);
+      throw e;
     }
 
     const envelope = parsed as ApiEnvelope<unknown> | undefined;
     if (!envelope || envelope.status !== "success") {
+      recordEvent(response.status, "HaruspexError");
       throw new HaruspexError("Malformed response from server", {
         status: response.status,
         body: parsed,
       });
     }
 
-    const meta: ResponseMeta = envelope.meta;
+    recordEvent(response.status, null);
+
+    const meta2: ResponseMeta = envelope.meta;
     const data = envelope.data;
 
     if (data !== null && typeof data === "object") {
-      return { ...(data as object), _meta: meta } as T;
+      return { ...(data as object), _meta: meta2 } as T;
     }
-    return { _meta: meta, value: data } as unknown as T;
+    return { _meta: meta2, value: data } as unknown as T;
   }
 
   private errorFor(response: Response, parsed: unknown): HaruspexError {

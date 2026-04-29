@@ -109,10 +109,18 @@ Three tiers, same as the SDK:
 - **"Rate limit exceeded"** in tool output. The demo key is 20 req/hr per
   IP. A free key is 1,000 req/month.
 
-## Privacy
+## Privacy & Telemetry (opt-in)
 
-This server makes HTTP requests only to `haruspex.guru`. No telemetry, no
-analytics, no third-party calls. Source is in this repository — audit it.
+This server makes HTTP requests only to `haruspex.guru`. Source is in
+this repository — audit it.
+
+Anonymous usage telemetry is **disabled by default**. Enable with
+`HARUSPEX_TELEMETRY=1`. Disable globally with `DO_NOT_TRACK=1`. Override
+the endpoint with `HARUSPEX_TELEMETRY_ENDPOINT`. When enabled, each
+tool invocation emits one event containing: anonymous client id (uuid
+at `~/.haruspex/id`), tool name, the symbol/query, http status,
+latency, and error type on failure. Events are batched and
+fire-and-forget — they never block tool calls or surface errors.
 
 ## License
 

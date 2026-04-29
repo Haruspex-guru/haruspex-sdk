@@ -4,6 +4,10 @@ from typing import Final, Literal
 
 BASE_URL: Final[str] = "https://haruspex.guru/api/v1"
 
+SDK_VERSION: Final[str] = "0.1.3"
+
+TELEMETRY_DEFAULT_ENDPOINT: Final[str] = "https://haruspex.guru/api/v1/telemetry/events"
+
 TOPIC_SLUGS: Final[tuple[str, ...]] = (
     "ai-exposure",
     "climate-risk",

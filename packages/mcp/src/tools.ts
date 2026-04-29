@@ -4,6 +4,7 @@ import {
   HaruspexError,
   HaruspexNotFoundError,
   HaruspexRateLimitError,
+  TelemetryClient,
   type Score,
   type SearchResultItem,
   type NewsArticle,
@@ -208,23 +209,53 @@ function asOptionalString(value: unknown, name: string): string | undefined {
   return value;
 }
 
+function symbolOrQueryFromArgs(name: string, args: Record<string, unknown>): string | undefined {
+  if (name === "search_stocks" && typeof args.query === "string") return args.query;
+  if (typeof args.symbol === "string") return args.symbol.toUpperCase();
+  if (Array.isArray(args.symbols)) return (args.symbols as unknown[]).filter((s) => typeof s === "string").join(",");
+  return undefined;
+}
+
 export async function handleToolCall(
   client: Haruspex,
   name: string,
   args: Record<string, unknown>,
+  telemetry?: TelemetryClient,
 ): Promise<ToolResult> {
+  const start =
+    typeof performance !== "undefined" && typeof performance.now === "function"
+      ? performance.now()
+      : Date.now();
+  const recordEvent = (status: number, errType: string | null): void => {
+    if (!telemetry) return;
+    const now =
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now();
+    telemetry.record({
+      event_type: "tool_call",
+      tool_name: name,
+      symbol_or_query: symbolOrQueryFromArgs(name, args),
+      http_status: status,
+      latency_ms: Math.max(0, Math.round(now - start)),
+      error_type: errType,
+    });
+  };
   try {
+    let result: ToolResult;
     switch (name) {
       case "get_stock_score": {
         const symbol = asString(args.symbol, "symbol");
         const res = await client.scores.get(symbol);
-        return text(formatScore(res));
+        result = text(formatScore(res));
+        break;
       }
       case "get_batch_scores": {
         const symbols = asStringArray(args.symbols, "symbols");
         const res = await client.scores.batch(symbols);
         const blocks = res.scores.map(formatScore);
-        return text(blocks.join("\n\n"));
+        result = text(blocks.join("\n\n"));
+        break;
       }
       case "get_stock_score_history": {
         const symbol = asString(args.symbol, "symbol");
@@ -234,24 +265,36 @@ export async function handleToolCall(
         const res = await client.scores.history(symbol, { from, to, limit });
         const header = `Historical scores for ${res.symbol} (${res.count} days):`;
         const blocks = res.scores.map(formatScore);
-        return text([header, "", ...blocks].join("\n\n"));
+        result = text([header, "", ...blocks].join("\n\n"));
+        break;
       }
       case "search_stocks": {
         const query = asString(args.query, "query");
         const limit = asOptionalInt(args.limit, "limit");
         const res = await client.search(query, { limit });
-        return text(formatSearch(res.results));
+        result = text(formatSearch(res.results));
+        break;
       }
       case "get_stock_news": {
         const symbol = asString(args.symbol, "symbol");
         const limit = asOptionalInt(args.limit, "limit");
         const res = await client.news(symbol, { limit });
-        return text(formatNews(res.symbol, res.articles));
+        result = text(formatNews(res.symbol, res.articles));
+        break;
       }
       default:
+        recordEvent(0, "UnknownTool");
         return errorResult(`Unknown tool: ${name}`);
     }
+    recordEvent(200, null);
+    return result;
   } catch (err) {
+    const status = err instanceof HaruspexError ? err.status : 0;
+    const errType =
+      err instanceof Error && err.constructor && err.constructor.name
+        ? err.constructor.name
+        : "Error";
+    recordEvent(status, errType);
     return mapError(err);
   }
 }

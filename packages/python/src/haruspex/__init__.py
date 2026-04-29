@@ -11,7 +11,9 @@ from haruspex.constants import (
     MAX_NEWS_LIMIT,
     MAX_SEARCH_LIMIT,
     OUTLOOKS,
+    SDK_VERSION,
     SIGNALS,
+    TELEMETRY_DEFAULT_ENDPOINT,
     TOPIC_SLUGS,
 )
 from haruspex.errors import (
@@ -22,6 +24,11 @@ from haruspex.errors import (
     HaruspexRateLimitError,
     HaruspexServerError,
     HaruspexValidationError,
+)
+from haruspex.telemetry import (
+    AsyncTelemetryClient,
+    TelemetryClient,
+    TelemetryOptions,
 )
 from haruspex.types import (
     BatchResponse,
@@ -45,6 +52,7 @@ __version__ = "0.1.3"
 
 __all__ = [
     "AsyncHaruspex",
+    "AsyncTelemetryClient",
     "BASE_URL",
     "BatchResponse",
     "BatchResult",
@@ -68,13 +76,17 @@ __all__ = [
     "OUTLOOKS",
     "RateLimit",
     "ResponseMeta",
+    "SDK_VERSION",
     "SIGNALS",
     "Score",
     "ScoreResponse",
     "SearchResponse",
     "SearchResult",
     "SearchResultItem",
+    "TELEMETRY_DEFAULT_ENDPOINT",
     "TOPIC_SLUGS",
+    "TelemetryClient",
+    "TelemetryOptions",
     "TopicScore",
     "__version__",
 ]

@@ -96,6 +96,24 @@ evaluation without signup, use the public demo key
 (`hrspx_live_a7c52f9315a65c377fec9c30b53f266b`) documented in the
 [root README](../../README.md).
 
+## Telemetry (opt-in)
+
+The SDK can emit anonymous usage events. **Disabled by default.** Enable
+via env `HARUSPEX_TELEMETRY=1` or:
+
+```python
+from haruspex import Haruspex, TelemetryOptions
+
+c = Haruspex(api_key=..., telemetry=TelemetryOptions(enabled=True))
+```
+
+Set `DO_NOT_TRACK=1` to disable globally. Override the endpoint with
+`HARUSPEX_TELEMETRY_ENDPOINT`. Each event contains an anonymous client
+id (uuid at `~/.haruspex/id`), sdk name + version, request endpoint
+template, the symbol/query, HTTP status, latency, and error type on
+failure. Events are batched and fire-and-forget — they never block your
+call or surface errors.
+
 ## License
 
 MIT. The SDK source code in this repository is MIT-licensed; the Haruspex

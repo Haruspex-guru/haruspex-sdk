@@ -15,6 +15,7 @@ from haruspex.constants import (
     MAX_HISTORY_LIMIT,
     MAX_NEWS_LIMIT,
     MAX_SEARCH_LIMIT,
+    SDK_VERSION,
 )
 from haruspex.errors import (
     HaruspexAuthError,
@@ -24,6 +25,12 @@ from haruspex.errors import (
     HaruspexRateLimitError,
     HaruspexServerError,
     HaruspexValidationError,
+)
+from haruspex.telemetry import (
+    AsyncTelemetryClient,
+    TelemetryClient,
+    TelemetryOptions,
+    templatize,
 )
 from haruspex.types import (
     BatchResponse,
@@ -38,7 +45,7 @@ from haruspex.types import (
 _RETRYABLE_STATUSES = {429, 502, 503, 504}
 _RETRY_BASE_MS = 250
 _RETRY_MAX_MS = 4000
-_DEFAULT_USER_AGENT = "haruspex-sdk-py/0.1.0"
+_DEFAULT_USER_AGENT = f"haruspex-sdk-py/{SDK_VERSION}"
 
 
 def _normalize_symbol(symbol: str) -> str:
@@ -126,6 +133,7 @@ class _BaseClient:
         timeout: float = 10.0,
         max_retries: int = 2,
         user_agent: Optional[str] = None,
+        telemetry: Optional[TelemetryOptions] = None,
     ) -> None:
         key = api_key or os.environ.get("HARUSPEX_API_KEY")
         if not key:
@@ -138,6 +146,7 @@ class _BaseClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self._user_agent = user_agent or _DEFAULT_USER_AGENT
+        self._telemetry_options = telemetry
 
     def _headers(self, has_body: bool) -> dict[str, str]:
         h = {
@@ -156,7 +165,7 @@ class _Scores:
 
     def get(self, symbol: str) -> ScoreResponse:
         sym = _normalize_symbol(symbol)
-        data, meta = self._c._request("GET", f"/scores/{sym}")
+        data, meta = self._c._request("GET", f"/scores/{sym}", meta_symbol=sym)
         return ScoreResponse.model_validate(_attach_meta(data, meta))
 
     def batch(self, symbols: list[str]) -> BatchResponse:
@@ -165,7 +174,12 @@ class _Scores:
         if len(symbols) > MAX_BATCH:
             raise HaruspexValidationError(f"symbols length must be <= {MAX_BATCH}")
         normalized = [_normalize_symbol(s) for s in symbols]
-        data, meta = self._c._request("POST", "/scores/batch", json={"symbols": normalized})
+        data, meta = self._c._request(
+            "POST",
+            "/scores/batch",
+            json={"symbols": normalized},
+            meta_symbol=",".join(normalized),
+        )
         return BatchResponse.model_validate(_attach_meta(data, meta))
 
     def history(
@@ -178,7 +192,9 @@ class _Scores:
         sym = _normalize_symbol(symbol)
         lim = _clamp_limit("limit", limit, MAX_HISTORY_LIMIT)
         params = _build_history_query(from_, to, lim)
-        data, meta = self._c._request("GET", f"/scores/{sym}/history", params=params)
+        data, meta = self._c._request(
+            "GET", f"/scores/{sym}/history", params=params, meta_symbol=sym
+        )
         return HistoryResponse.model_validate(_attach_meta(data, meta))
 
 
@@ -188,7 +204,7 @@ class _AsyncScores:
 
     async def get(self, symbol: str) -> ScoreResponse:
         sym = _normalize_symbol(symbol)
-        data, meta = await self._c._request("GET", f"/scores/{sym}")
+        data, meta = await self._c._request("GET", f"/scores/{sym}", meta_symbol=sym)
         return ScoreResponse.model_validate(_attach_meta(data, meta))
 
     async def batch(self, symbols: list[str]) -> BatchResponse:
@@ -197,7 +213,12 @@ class _AsyncScores:
         if len(symbols) > MAX_BATCH:
             raise HaruspexValidationError(f"symbols length must be <= {MAX_BATCH}")
         normalized = [_normalize_symbol(s) for s in symbols]
-        data, meta = await self._c._request("POST", "/scores/batch", json={"symbols": normalized})
+        data, meta = await self._c._request(
+            "POST",
+            "/scores/batch",
+            json={"symbols": normalized},
+            meta_symbol=",".join(normalized),
+        )
         return BatchResponse.model_validate(_attach_meta(data, meta))
 
     async def history(
@@ -210,7 +231,9 @@ class _AsyncScores:
         sym = _normalize_symbol(symbol)
         lim = _clamp_limit("limit", limit, MAX_HISTORY_LIMIT)
         params = _build_history_query(from_, to, lim)
-        data, meta = await self._c._request("GET", f"/scores/{sym}/history", params=params)
+        data, meta = await self._c._request(
+            "GET", f"/scores/{sym}/history", params=params, meta_symbol=sym
+        )
         return HistoryResponse.model_validate(_attach_meta(data, meta))
 
 
@@ -225,10 +248,17 @@ class Haruspex(_BaseClient):
         max_retries: int = 2,
         user_agent: Optional[str] = None,
         transport: Optional[httpx.BaseTransport] = None,
+        telemetry: Optional[TelemetryOptions] = None,
     ) -> None:
-        super().__init__(api_key, base_url, timeout, max_retries, user_agent)
+        super().__init__(api_key, base_url, timeout, max_retries, user_agent, telemetry)
         self._http = httpx.Client(timeout=timeout, transport=transport)
         self.scores = _Scores(self)
+        self._telemetry = TelemetryClient(
+            api_key=self._api_key,
+            sdk_name="python",
+            sdk_version=SDK_VERSION,
+            options=self._telemetry_options,
+        )
 
     def __enter__(self) -> Haruspex:
         return self
@@ -237,6 +267,10 @@ class Haruspex(_BaseClient):
         self.close()
 
     def close(self) -> None:
+        try:
+            self._telemetry.shutdown()
+        except Exception:
+            pass
         self._http.close()
 
     def search(self, query: str, limit: Optional[int] = None) -> SearchResponse:
@@ -246,7 +280,7 @@ class Haruspex(_BaseClient):
         params: dict[str, str] = {"q": query.strip()}
         if lim is not None:
             params["limit"] = str(lim)
-        data, meta = self._request("GET", "/search", params=params)
+        data, meta = self._request("GET", "/search", params=params, meta_symbol=query.strip())
         return SearchResponse.model_validate(_attach_meta(data, meta))
 
     def news(self, symbol: str, limit: Optional[int] = None) -> NewsResponse:
@@ -255,7 +289,7 @@ class Haruspex(_BaseClient):
         params: dict[str, str] = {}
         if lim is not None:
             params["limit"] = str(lim)
-        data, meta = self._request("GET", f"/stocks/{sym}/news", params=params)
+        data, meta = self._request("GET", f"/stocks/{sym}/news", params=params, meta_symbol=sym)
         return NewsResponse.model_validate(_attach_meta(data, meta))
 
     def _request(
@@ -264,12 +298,15 @@ class Haruspex(_BaseClient):
         path: str,
         params: Optional[dict[str, str]] = None,
         json: Optional[dict[str, Any]] = None,
+        meta_symbol: Optional[str] = None,
     ) -> tuple[dict[str, Any], ResponseMeta]:
         attempt = 0
         last: Optional[Exception] = None
         while attempt <= self.max_retries:
             try:
-                return self._request_once(method, path, params=params, json=json)
+                return self._request_once(
+                    method, path, params=params, json=json, meta_symbol=meta_symbol
+                )
             except HaruspexError as err:
                 last = err
                 if not _is_retryable(err) or attempt == self.max_retries:
@@ -289,16 +326,39 @@ class Haruspex(_BaseClient):
         path: str,
         params: Optional[dict[str, str]] = None,
         json: Optional[dict[str, Any]] = None,
+        meta_symbol: Optional[str] = None,
     ) -> tuple[dict[str, Any], ResponseMeta]:
         url = f"{self.base_url}{path}"
         headers = self._headers(has_body=json is not None)
+        start = time.perf_counter()
+
+        def _record(status: Optional[int], err_type: Optional[str]) -> None:
+            try:
+                self._telemetry.record(
+                    event_type="request",
+                    endpoint=templatize(method, path),
+                    symbol_or_query=meta_symbol,
+                    http_status=status,
+                    latency_ms=(time.perf_counter() - start) * 1000.0,
+                    error_type=err_type,
+                )
+            except Exception:
+                pass
+
         try:
             response = self._http.request(
                 method, url, params=params, json=json, headers=headers
             )
         except httpx.HTTPError as exc:
+            _record(0, "HaruspexNetworkError")
             raise HaruspexNetworkError(str(exc), status=0) from exc
-        return _process_response(response)
+        try:
+            result = _process_response(response)
+            _record(response.status_code, None)
+            return result
+        except HaruspexError as err:
+            _record(response.status_code, type(err).__name__)
+            raise
 
 
 class AsyncHaruspex(_BaseClient):
@@ -312,10 +372,17 @@ class AsyncHaruspex(_BaseClient):
         max_retries: int = 2,
         user_agent: Optional[str] = None,
         transport: Optional[httpx.AsyncBaseTransport] = None,
+        telemetry: Optional[TelemetryOptions] = None,
     ) -> None:
-        super().__init__(api_key, base_url, timeout, max_retries, user_agent)
+        super().__init__(api_key, base_url, timeout, max_retries, user_agent, telemetry)
         self._http = httpx.AsyncClient(timeout=timeout, transport=transport)
         self.scores = _AsyncScores(self)
+        self._telemetry = AsyncTelemetryClient(
+            api_key=self._api_key,
+            sdk_name="python",
+            sdk_version=SDK_VERSION,
+            options=self._telemetry_options,
+        )
 
     async def __aenter__(self) -> AsyncHaruspex:
         return self
@@ -324,6 +391,10 @@ class AsyncHaruspex(_BaseClient):
         await self.close()
 
     async def close(self) -> None:
+        try:
+            await self._telemetry.shutdown()
+        except Exception:
+            pass
         await self._http.aclose()
 
     async def search(self, query: str, limit: Optional[int] = None) -> SearchResponse:
@@ -333,7 +404,9 @@ class AsyncHaruspex(_BaseClient):
         params: dict[str, str] = {"q": query.strip()}
         if lim is not None:
             params["limit"] = str(lim)
-        data, meta = await self._request("GET", "/search", params=params)
+        data, meta = await self._request(
+            "GET", "/search", params=params, meta_symbol=query.strip()
+        )
         return SearchResponse.model_validate(_attach_meta(data, meta))
 
     async def news(self, symbol: str, limit: Optional[int] = None) -> NewsResponse:
@@ -342,7 +415,9 @@ class AsyncHaruspex(_BaseClient):
         params: dict[str, str] = {}
         if lim is not None:
             params["limit"] = str(lim)
-        data, meta = await self._request("GET", f"/stocks/{sym}/news", params=params)
+        data, meta = await self._request(
+            "GET", f"/stocks/{sym}/news", params=params, meta_symbol=sym
+        )
         return NewsResponse.model_validate(_attach_meta(data, meta))
 
     async def _request(
@@ -351,6 +426,7 @@ class AsyncHaruspex(_BaseClient):
         path: str,
         params: Optional[dict[str, str]] = None,
         json: Optional[dict[str, Any]] = None,
+        meta_symbol: Optional[str] = None,
     ) -> tuple[dict[str, Any], ResponseMeta]:
         import asyncio
 
@@ -358,7 +434,9 @@ class AsyncHaruspex(_BaseClient):
         last: Optional[Exception] = None
         while attempt <= self.max_retries:
             try:
-                return await self._request_once(method, path, params=params, json=json)
+                return await self._request_once(
+                    method, path, params=params, json=json, meta_symbol=meta_symbol
+                )
             except HaruspexError as err:
                 last = err
                 if not _is_retryable(err) or attempt == self.max_retries:
@@ -378,16 +456,39 @@ class AsyncHaruspex(_BaseClient):
         path: str,
         params: Optional[dict[str, str]] = None,
         json: Optional[dict[str, Any]] = None,
+        meta_symbol: Optional[str] = None,
     ) -> tuple[dict[str, Any], ResponseMeta]:
         url = f"{self.base_url}{path}"
         headers = self._headers(has_body=json is not None)
+        start = time.perf_counter()
+
+        def _record(status: Optional[int], err_type: Optional[str]) -> None:
+            try:
+                self._telemetry.record(
+                    event_type="request",
+                    endpoint=templatize(method, path),
+                    symbol_or_query=meta_symbol,
+                    http_status=status,
+                    latency_ms=(time.perf_counter() - start) * 1000.0,
+                    error_type=err_type,
+                )
+            except Exception:
+                pass
+
         try:
             response = await self._http.request(
                 method, url, params=params, json=json, headers=headers
             )
         except httpx.HTTPError as exc:
+            _record(0, "HaruspexNetworkError")
             raise HaruspexNetworkError(str(exc), status=0) from exc
-        return _process_response(response)
+        try:
+            result = _process_response(response)
+            _record(response.status_code, None)
+            return result
+        except HaruspexError as err:
+            _record(response.status_code, type(err).__name__)
+            raise
 
 
 def _process_response(
