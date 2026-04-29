@@ -2,9 +2,9 @@
 
 > Stock intelligence scores (0–100) across 16 dimensions. Official SDK and API docs.
 
-[![npm](https://img.shields.io/npm/v/%40haruspex%2Fsdk?label=%40haruspex%2Fsdk)](https://www.npmjs.com/package/@haruspex-guru-sdk/sdk)
+[![npm](https://img.shields.io/npm/v/%40haruspex-guru-sdk%2Fsdk?label=%40haruspex-guru-sdk%2Fsdk)](https://www.npmjs.com/package/@haruspex-guru-sdk/sdk)
 [![PyPI](https://img.shields.io/pypi/v/haruspex-sdk?label=haruspex-sdk)](https://pypi.org/project/haruspex-sdk/)
-[![npm mcp](https://img.shields.io/npm/v/%40haruspex%2Fmcp-server?label=%40haruspex%2Fmcp-server)](https://www.npmjs.com/package/@haruspex-guru-sdk/mcp-server)
+[![npm mcp](https://img.shields.io/npm/v/%40haruspex-guru-sdk%2Fmcp-server?label=%40haruspex-guru-sdk%2Fmcp-server)](https://www.npmjs.com/package/@haruspex-guru-sdk/mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![CI](https://github.com/Haruspex-guru/haruspex-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Haruspex-guru/haruspex-sdk/actions/workflows/ci.yml)
 
