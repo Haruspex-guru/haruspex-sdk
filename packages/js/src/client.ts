@@ -199,6 +199,15 @@ export class Haruspex {
     return this.request<NewsResponse>("GET", path, undefined, { symbolOrQuery: sym });
   }
 
+  /**
+   * Flush any queued telemetry events and stop the background flush timer.
+   * Call before process exit if you want pending telemetry to be sent.
+   * Safe to call when telemetry is disabled (no-op).
+   */
+  async shutdown(): Promise<void> {
+    await this.telemetry.shutdown();
+  }
+
   private async request<T extends WithMeta<unknown>>(
     method: string,
     path: string,

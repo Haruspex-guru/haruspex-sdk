@@ -38,21 +38,6 @@ const DEFAULT_FLUSH_INTERVAL_MS = 5000;
 const DEFAULT_MAX_BATCH = 20;
 const POST_TIMEOUT_MS = 2000;
 
-const activeTelemetryClients = new Set<TelemetryClient>();
-let processExitHookRegistered = false;
-
-function ensureProcessExitHook(): void {
-  if (processExitHookRegistered) return;
-  if (typeof process === "undefined" || typeof process.on !== "function") return;
-  processExitHookRegistered = true;
-  const handler = (): void => {
-    for (const c of activeTelemetryClients) {
-      void c.shutdown();
-    }
-  };
-  process.on("beforeExit", handler);
-}
-
 function envTrue(value: string | undefined): boolean {
   if (!value) return false;
   const v = value.toLowerCase();
@@ -151,8 +136,6 @@ export class TelemetryClient {
     this.clientId = this.enabled ? loadOrCreateClientId(o.clientIdPath) : "";
     if (this.enabled) {
       this.startTimer();
-      activeTelemetryClients.add(this);
-      ensureProcessExitHook();
     }
   }
 
@@ -234,7 +217,6 @@ export class TelemetryClient {
   async shutdown(): Promise<void> {
     if (this.shuttingDown) return;
     this.shuttingDown = true;
-    activeTelemetryClients.delete(this);
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;

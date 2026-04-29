@@ -88,9 +88,17 @@ describe("TelemetryClient + Haruspex integration", () => {
   const TELEMETRY_URL = "https://haruspex.guru/api/v1/telemetry/events";
   const API_BASE = "https://haruspex.guru/api/v1";
   const server = setupServer();
+  const clients: Array<{ shutdown: () => Promise<void> }> = [];
+  const track = <T extends { shutdown: () => Promise<void> }>(c: T): T => {
+    clients.push(c);
+    return c;
+  };
 
   beforeEach(() => server.listen({ onUnhandledRequest: "error" }));
-  afterEach(() => server.close());
+  afterEach(async () => {
+    await Promise.all(clients.splice(0).map((c) => c.shutdown()));
+    server.close();
+  });
 
   it("disabled by default: no telemetry POST", async () => {
     const telemetryFetch = vi.fn();
@@ -98,7 +106,7 @@ describe("TelemetryClient + Haruspex integration", () => {
       http.get(`${API_BASE}/scores/AAPL`, () => HttpResponse.json(SCORE)),
       http.post(TELEMETRY_URL, telemetryFetch),
     );
-    const c = new Haruspex({ apiKey: "test-key", maxRetries: 0 });
+    const c = track(new Haruspex({ apiKey: "test-key", maxRetries: 0 }));
     await c.scores.get("AAPL");
     expect(telemetryFetch).not.toHaveBeenCalled();
   });
@@ -115,11 +123,13 @@ describe("TelemetryClient + Haruspex integration", () => {
     );
     const dir = mkdtempSync(join(tmpdir(), "haruspex-test-"));
     try {
-      const c = new Haruspex({
-        apiKey: "test-key",
-        maxRetries: 0,
-        telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
-      });
+      const c = track(
+        new Haruspex({
+          apiKey: "test-key",
+          maxRetries: 0,
+          telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
+        }),
+      );
       await c.scores.get("aapl");
       await new Promise((r) => setTimeout(r, 50));
       const body = captured as { events: Array<Record<string, unknown>> };
@@ -153,11 +163,13 @@ describe("TelemetryClient + Haruspex integration", () => {
     );
     const dir = mkdtempSync(join(tmpdir(), "haruspex-test-"));
     try {
-      const c = new Haruspex({
-        apiKey: "test-key",
-        maxRetries: 0,
-        telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
-      });
+      const c = track(
+        new Haruspex({
+          apiKey: "test-key",
+          maxRetries: 0,
+          telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
+        }),
+      );
       await expect(c.scores.get("ZZZZ")).rejects.toBeDefined();
       await new Promise((r) => setTimeout(r, 50));
       expect(captured).not.toBeNull();
@@ -176,11 +188,13 @@ describe("TelemetryClient + Haruspex integration", () => {
     );
     const dir = mkdtempSync(join(tmpdir(), "haruspex-test-"));
     try {
-      const c = new Haruspex({
-        apiKey: "test-key",
-        maxRetries: 0,
-        telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
-      });
+      const c = track(
+        new Haruspex({
+          apiKey: "test-key",
+          maxRetries: 0,
+          telemetry: { enabled: true, clientIdPath: join(dir, "id"), maxBatchSize: 1 },
+        }),
+      );
       const res = await c.scores.get("AAPL");
       expect(res.score).toBe(75);
     } finally {
