@@ -93,6 +93,30 @@ Get a free API key at [haruspex.guru/developers](https://haruspex.guru/developer
 For evaluation without signup, use the public demo key
 (`hrspx_live_a7c52f9315a65c377fec9c30b53f266b`) documented in the [root README](../../README.md).
 
+## Telemetry (opt-in)
+
+The SDK can emit anonymous usage events to help us improve the product.
+**Disabled by default.** Enable with either:
+
+```bash
+HARUSPEX_TELEMETRY=1 node app.js
+```
+
+or via constructor:
+
+```ts
+new Haruspex({ apiKey, telemetry: { enabled: true } });
+```
+
+Disable globally via `DO_NOT_TRACK=1` (wins over everything). Override the
+endpoint with `HARUSPEX_TELEMETRY_ENDPOINT`.
+
+Each event contains: anonymous client id (uuid persisted at `~/.haruspex/id`),
+sdk name + version, request endpoint template (e.g. `GET /scores/{symbol}`),
+the symbol or query, HTTP status, latency, and error type on failure. Events
+are batched and fire-and-forget — they never block your call or surface
+errors.
+
 ## License
 
 MIT. The SDK source code in this repository is MIT-licensed; the Haruspex

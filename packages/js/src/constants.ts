@@ -4,6 +4,11 @@
  */
 export const BASE_URL = "https://haruspex.guru/api/v1";
 
+export const SDK_VERSION = "0.1.3";
+
+export const TELEMETRY_DEFAULT_ENDPOINT =
+  "https://haruspex.guru/api/v1/telemetry/events";
+
 /**
  * Topic dimensions returned in `Score.topicScores`. Treated as a const tuple
  * so callers can iterate them; the API may add new topics over time.

@@ -12,9 +12,22 @@ async function main(): Promise<void> {
     );
   }
 
-  const server = buildServer({ apiKey });
+  const { server, telemetry } = buildServer({ apiKey });
   const transport = new StdioServerTransport();
   await server.connect(transport);
+
+  const shutdown = (): void => {
+    void telemetry.shutdown();
+  };
+  process.once("SIGINT", () => {
+    shutdown();
+    process.exit(0);
+  });
+  process.once("SIGTERM", () => {
+    shutdown();
+    process.exit(0);
+  });
+  process.once("beforeExit", shutdown);
 }
 
 main().catch((err) => {
